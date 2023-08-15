@@ -217,6 +217,16 @@ class Cube:
                                     [0, 0, 1]])
         
         self.perform_move(rotation_matrix, z=1)
+
+    def U(self, degrees):
+        """
+        Rotates the top layer <degrees> clockwise
+
+        @param degrees: degrees that top will be rotated clockwise
+        """
+
+        assert degrees % 90 == 0, "U rotation must be multiple of 90 degrees!"
+        self.U_prime(-degrees)
         
 
 class Cubie:
@@ -238,7 +248,10 @@ c1.initialize_cube()
 print("BEFORE:", end=" ")
 c1.visualize_cube()
 
+c1.U(90)
 c1.U_prime(90)
+c1.U_prime(90)
+c1.U(90)
 
 print("AFTER:", end=" ")
 c1.visualize_cube()
