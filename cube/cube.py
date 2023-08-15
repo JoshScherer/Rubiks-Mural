@@ -325,11 +325,38 @@ class Cube:
         """
         Rotates the front face <degrees> clockwise (when facing front face)
 
-        @param degrees: degrees that right will be rotated clockwise
+        @param degrees: degrees that front will be rotated clockwise
         """
 
-        assert degrees % 90 == 0, "R rotation must be multiple of 90 degrees!"
+        assert degrees % 90 == 0, "F rotation must be multiple of 90 degrees!"
         self.F_prime(-degrees)
+
+    def B_prime(self, degrees):
+        """
+        Rotates the back face <degrees> counter-clockwise (when facing back face)
+
+        @param degrees: degrees that back face will be rotated counter-clockwise
+        """
+
+        assert degrees % 90 == 0, "B' rotation must be multiple of 90 degrees!"
+        radians = math.radians(degrees)
+        rotation_matrix = np.array([[1, 0, 0],
+                                    [0, np.cos(radians), np.sin(radians)],
+                                    [0, -np.sin(radians), np.cos(radians)]])
+        
+        self.perform_move(rotation_matrix, x=-1)
+
+    def B(self, degrees):
+        """
+        Rotates the back face <degrees> clockwise (when facing back face)
+
+        @param degrees: degrees that back will be rotated clockwise
+        """
+
+        assert degrees % 90 == 0, "B rotation must be multiple of 90 degrees!"
+        self.B_prime(-degrees)
+
+
 
 
 class Cubie:
@@ -357,6 +384,8 @@ c1.R(90)
 c1.R_prime(90)
 c1.F_prime(90)
 c1.F(90)
+c1.B_prime(90)
+c1.B(90)
 
 print("AFTER:", end=" ")
 c1.visualize_cube()
