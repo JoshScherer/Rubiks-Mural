@@ -205,7 +205,7 @@ class Cube:
 
     def U_prime(self, degrees):
         """
-        Rotates the top layer <degrees> counter-clockwise (when facing top layer)
+        Rotates the top face <degrees> counter-clockwise (when facing top face)
 
         @param degrees: degrees that top will be rotated counter-clockwise
         """
@@ -220,7 +220,7 @@ class Cube:
 
     def U(self, degrees):
         """
-        Rotates the top layer <degrees> clockwise (when facing top layer)
+        Rotates the top face <degrees> clockwise (when facing top face)
 
         @param degrees: degrees that top will be rotated clockwise
         """
@@ -231,7 +231,7 @@ class Cube:
 
     def D_prime(self, degrees):
         """
-        Rotates the bottom layer <degrees> counter-clockwise (when facing bottom layer)
+        Rotates the bottom face <degrees> counter-clockwise (when facing bottom face)
 
         @param degrees: degrees that bottom will be rotated counter-clockwise
         """
@@ -246,7 +246,7 @@ class Cube:
 
     def D(self, degrees):
         """
-        Rotates the bottom layer <degrees> clockwise (when facing bottom layer)
+        Rotates the bottom face <degrees> clockwise (when facing bottom face)
 
         @param degrees: degrees that bottom will be rotated clockwise
         """
@@ -257,7 +257,7 @@ class Cube:
 
     def R_prime(self, degrees):
         """
-        Rotates the right layer <degrees> counter-clockwise (when facing right layer)
+        Rotates the right face <degrees> counter-clockwise (when facing right face)
 
         @param degrees: degrees that right will be rotated counter-clockwise
         """
@@ -272,7 +272,7 @@ class Cube:
 
     def R(self, degrees):
         """
-        Rotates the right layer <degrees> clockwise (when facing right layer)
+        Rotates the right face <degrees> clockwise (when facing right face)
 
         @param degrees: degrees that right will be rotated clockwise
         """
@@ -283,7 +283,7 @@ class Cube:
 
     def L_prime(self, degrees):
         """
-        Rotates the left layer <degrees> counter-clockwise (when facing left layer)
+        Rotates the left face <degrees> counter-clockwise (when facing left face)
 
         @param degrees: degrees that left will be rotated counter-clockwise
         """
@@ -298,7 +298,7 @@ class Cube:
 
     def L(self, degrees):
         """
-        Rotates the left layer <degrees> clockwise (when facing left layer)
+        Rotates the left face <degrees> clockwise (when facing left face)
 
         @param degrees: degrees that left will be rotated clockwise
         """
@@ -306,7 +306,30 @@ class Cube:
         assert degrees % 90 == 0, "L rotation must be multiple of 90 degrees!"
         self.L_prime(-degrees)
 
-    
+    def F_prime(self, degrees):
+        """
+        Rotates the front face <degrees> counter-clockwise (when facing front face)
+
+        @param degrees: degrees that front face will be rotated counter-clockwise
+        """
+
+        assert degrees % 90 == 0, "F' rotation must be multiple of 90 degrees!"
+        radians = math.radians(degrees)
+        rotation_matrix = np.array([[1, 0, 0],
+                                    [0, np.cos(radians), -np.sin(radians)],
+                                    [0, np.sin(radians), np.cos(radians)]])
+        
+        self.perform_move(rotation_matrix, x=1)
+
+    def F(self, degrees):
+        """
+        Rotates the front face <degrees> clockwise (when facing front face)
+
+        @param degrees: degrees that right will be rotated clockwise
+        """
+
+        assert degrees % 90 == 0, "R rotation must be multiple of 90 degrees!"
+        self.F_prime(-degrees)
 
 
 class Cubie:
@@ -332,6 +355,8 @@ c1.L_prime(90)
 c1.L(90)
 c1.R(90)
 c1.R_prime(90)
+c1.F_prime(90)
+c1.F(90)
 
 print("AFTER:", end=" ")
 c1.visualize_cube()
