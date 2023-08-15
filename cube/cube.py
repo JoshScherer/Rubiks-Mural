@@ -253,7 +253,23 @@ class Cube:
 
         assert degrees % 90 == 0, "D rotation must be multiple of 90 degrees!"
         self.D_prime(-degrees)
+
+
+    def R_prime(self, degrees):
+        """
+        Rotates the right layer <degrees> counter-clockwise (when facing right layer)
+
+        @param degrees: degrees that right will be rotated counter-clockwise
+        """
+
+        assert degrees % 90 == 0, "R' rotation must be multiple of 90 degrees!"
+        radians = math.radians(degrees)
+        rotation_matrix = np.array([[np.cos(radians), 0, np.sin(radians)],
+                                    [0, 1, 0],
+                                    [-np.sin(radians), 0, np.cos(radians)]])
         
+        self.perform_move(rotation_matrix, y=1)
+
 
 class Cubie:
     """
@@ -274,8 +290,7 @@ c1.initialize_cube()
 print("BEFORE:", end=" ")
 c1.visualize_cube()
 
-c1.D_prime(90)
-c1.D(90)
+c1.R_prime(90)
 
 print("AFTER:", end=" ")
 c1.visualize_cube()
