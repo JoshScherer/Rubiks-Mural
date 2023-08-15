@@ -1,7 +1,7 @@
 #import numpy as np
 
 class Cube:
-    def __init__(self, name, age):
+    def __init__(self):
         self.cube = [None] * 26  # array of cubies that represent the whole cube
 
         # String input to cubie index mapping
@@ -67,7 +67,23 @@ class Cube:
 
 
     def get_input_colors(self):
-        pass
+        # Order for each side (listed first) as FRONT, LEFT, RIGHT, TOP
+        orient_order = [['WHITE', 'GREEN', 'BLUE', 'ORANGE'],
+                        ['GREEN', 'ORANGE', 'RED', 'WHITE'],
+                        ['RED', 'GREEN', 'BLUE', 'WHITE'],
+                        ['BLUE', 'RED', 'ORANGE', 'WHITE'],
+                        ['ORANGE', 'BLUE', 'GREEN', 'WHITE'],
+                        ['YELLOW', 'GREEN', 'BLUE', 'RED']]
+        
+        full_input = ""
+        
+        for row in orient_order:
+            print("-"*50)
+            print("ORIENT: {} ON FRONT, {} ON LEFT, {} ON RIGHT, AND {} UP".format(*row))
+
+            full_input += str(input(f"Provide colors for side with {row[0]} center starting at top left working to bottom right (W/G/R/B/O/Y): "))
+
+        return full_input
 
 
     def populate_colors(self, color_string):   
@@ -166,7 +182,7 @@ class Cubie:
         self.pos = pos
         self.colors = colors
 
-c1 = Cube("Alex", 12)
+c1 = Cube()
 
 c1.initialize_cube()
 
