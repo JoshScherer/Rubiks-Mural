@@ -1,4 +1,5 @@
-#import numpy as np
+import numpy as np
+import math
 
 class Cube:
     def __init__(self):
@@ -116,8 +117,6 @@ class Cube:
 
         self.populate_colors(color_string=color_string)
 
-        self.visualize_cube()
-
 
     def visualize_cube(self):  
         positions_to_cubie_index = {v: k for k, v in self.cubie_index_positions.items()}  # 1:1 mapping, so this works
@@ -168,6 +167,57 @@ class Cube:
 
         print("".join(output_str))
 
+    
+    def perform_move(self, transformation_matrix, x=None, y=None, z=None):
+        """
+        Given a transformation matrix for (U, D, R, L, F, or B - or associated primes), perform the move on the cube
+
+        @param transformation_matrix: np.array with values for the corresponding rotation done to appropriate cubies
+        @param x: if not None (default), then cubies at this x position undergo the transformation
+        @param y: if not None (default), then cubies at this y position undergo the transformation
+        @param z: if not None (default), then cubies at this z position undergo the transformation
+        """
+        assert x is not None or y is not None or z is not None, "Move cannot be performed. Provide axis of rotation."
+
+        # pos_ind is the index of the tuple for position (0 for x, 1 for y, 2 for z)
+        # pos_val is the value that the position index must be (-1, 0, or 1)
+        if x is not None:
+            assert y is None and z is None, "Move cannot be performed. Multiple axes of rotation provided."
+            pos_ind = 0 
+            pos_val = x
+
+        elif y is not None:
+            assert x is None and z is None, "Move cannot be performed. Multiple axes of rotation provided."
+            pos_ind = 1
+            pos_val = y
+        else:
+            assert x is None and y is None, "Move cannot be performed. Multiple axes of rotation provided."
+            pos_ind = 2
+            pos_val = z
+
+        for index, cubie in enumerate(self.cube):
+            if cubie.pos[pos_ind] == pos_val:
+                self.cube[index].pos = tuple([round(x) for x in np.dot(transformation_matrix, cubie.pos)])
+            
+                for color, normal_vec in self.cube[index].colors.items():
+                    self.cube[index].colors[color] = tuple([round(x) for x in np.dot(transformation_matrix, normal_vec)])
+
+
+    def U_prime(self, degrees):
+        """
+        Rotates the top layer <degrees> counter-clockwise
+
+        @param degrees: degrees that top will be rotated counter-clockwise
+        """
+
+        assert degrees % 90 == 0, "U' rotation must be multiple of 90 degrees!"
+        radians = math.radians(degrees)
+        rotation_matrix = np.array([[np.cos(radians), -np.sin(radians), 0],
+                                    [np.sin(radians), np.cos(radians), 0],
+                                    [0, 0, 1]])
+        
+        self.perform_move(rotation_matrix, z=1)
+        
 
 class Cubie:
     """
@@ -185,4 +235,11 @@ class Cubie:
 c1 = Cube()
 
 c1.initialize_cube()
+print("BEFORE:", end=" ")
+c1.visualize_cube()
+
+c1.U_prime(90)
+
+print("AFTER:", end=" ")
+c1.visualize_cube()
 
