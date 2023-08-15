@@ -281,6 +281,34 @@ class Cube:
         self.R_prime(-degrees)
 
 
+    def L_prime(self, degrees):
+        """
+        Rotates the left layer <degrees> counter-clockwise (when facing left layer)
+
+        @param degrees: degrees that left will be rotated counter-clockwise
+        """
+
+        assert degrees % 90 == 0, "L' rotation must be multiple of 90 degrees!"
+        radians = math.radians(degrees)
+        rotation_matrix = np.array([[np.cos(radians), 0, -np.sin(radians)],
+                                    [0, 1, 0],
+                                    [np.sin(radians), 0, np.cos(radians)]])
+        
+        self.perform_move(rotation_matrix, y=-1)
+
+    def L(self, degrees):
+        """
+        Rotates the left layer <degrees> clockwise (when facing left layer)
+
+        @param degrees: degrees that left will be rotated clockwise
+        """
+
+        assert degrees % 90 == 0, "L rotation must be multiple of 90 degrees!"
+        self.L_prime(-degrees)
+
+    
+
+
 class Cubie:
     """
     Represents an individual square on the cube (27 total on a cube).
@@ -300,8 +328,10 @@ c1.initialize_cube()
 print("BEFORE:", end=" ")
 c1.visualize_cube()
 
-c1.R_prime(90)
+c1.L_prime(90)
+c1.L(90)
 c1.R(90)
+c1.R_prime(90)
 
 print("AFTER:", end=" ")
 c1.visualize_cube()
