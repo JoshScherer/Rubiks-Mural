@@ -205,7 +205,7 @@ class Cube:
 
     def U_prime(self, degrees):
         """
-        Rotates the top layer <degrees> counter-clockwise
+        Rotates the top layer <degrees> counter-clockwise (when facing top layer)
 
         @param degrees: degrees that top will be rotated counter-clockwise
         """
@@ -220,13 +220,29 @@ class Cube:
 
     def U(self, degrees):
         """
-        Rotates the top layer <degrees> clockwise
+        Rotates the top layer <degrees> clockwise (when facing top layer)
 
         @param degrees: degrees that top will be rotated clockwise
         """
 
         assert degrees % 90 == 0, "U rotation must be multiple of 90 degrees!"
         self.U_prime(-degrees)
+
+
+    def D_prime(self, degrees):
+        """
+        Rotates the bottom layer <degrees> counter-clockwise (when facing bottom layer)
+
+        @param degrees: degrees that bottom will be rotated counter-clockwise
+        """
+
+        assert degrees % 90 == 0, "U' rotation must be multiple of 90 degrees!"
+        radians = math.radians(degrees)
+        rotation_matrix = np.array([[np.cos(radians), np.sin(radians), 0],
+                                    [-np.sin(radians), np.cos(radians), 0],
+                                    [0, 0, 1]])
+        
+        self.perform_move(rotation_matrix, z=-1)
         
 
 class Cubie:
@@ -248,10 +264,7 @@ c1.initialize_cube()
 print("BEFORE:", end=" ")
 c1.visualize_cube()
 
-c1.U(90)
-c1.U_prime(90)
-c1.U_prime(90)
-c1.U(90)
+c1.D_prime(90)
 
 print("AFTER:", end=" ")
 c1.visualize_cube()
