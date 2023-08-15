@@ -270,6 +270,16 @@ class Cube:
         
         self.perform_move(rotation_matrix, y=1)
 
+    def R(self, degrees):
+        """
+        Rotates the right layer <degrees> clockwise (when facing right layer)
+
+        @param degrees: degrees that right will be rotated clockwise
+        """
+
+        assert degrees % 90 == 0, "R rotation must be multiple of 90 degrees!"
+        self.R_prime(-degrees)
+
 
 class Cubie:
     """
@@ -291,6 +301,7 @@ print("BEFORE:", end=" ")
 c1.visualize_cube()
 
 c1.R_prime(90)
+c1.R(90)
 
 print("AFTER:", end=" ")
 c1.visualize_cube()
