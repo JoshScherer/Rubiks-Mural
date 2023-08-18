@@ -211,7 +211,7 @@ class Cube:
         @param z: if not None (default), then cubies at this z position undergo the transformation
         @param rotation: False if (U, D, R, L, F, or B - or primes), True if rotation (whole cube)
         """
-        assert x is not None or y is not None or z is not None, "Move cannot be performed. Provide axis of rotation."
+        assert rotation or (x is not None or y is not None or z is not None), "Move cannot be performed. Provide axis of rotation."
 
         # pos_ind is the index of the tuple for position (0 for x, 1 for y, 2 for z)
         # pos_val is the value that the position index must be (-1, 0, or 1)
@@ -237,7 +237,7 @@ class Cube:
                     self.cube[index].colors[color] = tuple([round(x) for x in np.dot(transformation_matrix, normal_vec)])
 
 
-    def U_prime(self, degrees):
+    def U_prime(self, degrees=90):
         """
         Rotates the top face <degrees> counter-clockwise (when facing top face)
 
@@ -252,7 +252,7 @@ class Cube:
         
         self.perform_move(rotation_matrix, z=1)
 
-    def U(self, degrees):
+    def U(self, degrees=90):
         """
         Rotates the top face <degrees> clockwise (when facing top face)
 
@@ -263,7 +263,7 @@ class Cube:
         self.U_prime(-degrees)
 
 
-    def D_prime(self, degrees):
+    def D_prime(self, degrees=90):
         """
         Rotates the bottom face <degrees> counter-clockwise (when facing bottom face)
 
@@ -278,7 +278,7 @@ class Cube:
         
         self.perform_move(rotation_matrix, z=-1)
 
-    def D(self, degrees):
+    def D(self, degrees=90):
         """
         Rotates the bottom face <degrees> clockwise (when facing bottom face)
 
@@ -289,7 +289,7 @@ class Cube:
         self.D_prime(-degrees)
 
 
-    def R_prime(self, degrees):
+    def R_prime(self, degrees=90):
         """
         Rotates the right face <degrees> counter-clockwise (when facing right face)
 
@@ -304,7 +304,7 @@ class Cube:
         
         self.perform_move(rotation_matrix, y=1)
 
-    def R(self, degrees):
+    def R(self, degrees=90):
         """
         Rotates the right face <degrees> clockwise (when facing right face)
 
@@ -315,7 +315,7 @@ class Cube:
         self.R_prime(-degrees)
 
 
-    def L_prime(self, degrees):
+    def L_prime(self, degrees=90):
         """
         Rotates the left face <degrees> counter-clockwise (when facing left face)
 
@@ -330,7 +330,7 @@ class Cube:
         
         self.perform_move(rotation_matrix, y=-1)
 
-    def L(self, degrees):
+    def L(self, degrees=90):
         """
         Rotates the left face <degrees> clockwise (when facing left face)
 
@@ -340,7 +340,7 @@ class Cube:
         assert degrees % 90 == 0, "L rotation must be multiple of 90 degrees!"
         self.L_prime(-degrees)
 
-    def F_prime(self, degrees):
+    def F_prime(self, degrees=90):
         """
         Rotates the front face <degrees> counter-clockwise (when facing front face)
 
@@ -355,7 +355,7 @@ class Cube:
         
         self.perform_move(rotation_matrix, x=1)
 
-    def F(self, degrees):
+    def F(self, degrees=90):
         """
         Rotates the front face <degrees> clockwise (when facing front face)
 
@@ -365,7 +365,7 @@ class Cube:
         assert degrees % 90 == 0, "F rotation must be multiple of 90 degrees!"
         self.F_prime(-degrees)
 
-    def B_prime(self, degrees):
+    def B_prime(self, degrees=90):
         """
         Rotates the back face <degrees> counter-clockwise (when facing back face)
 
@@ -380,7 +380,7 @@ class Cube:
         
         self.perform_move(rotation_matrix, x=-1)
 
-    def B(self, degrees):
+    def B(self, degrees=90):
         """
         Rotates the back face <degrees> clockwise (when facing back face)
 
@@ -391,44 +391,67 @@ class Cube:
         self.B_prime(-degrees)
 
 
-    def rotate_cube_along_z_clockwise(self):
+    def rotate_cube_along_y_counterclockwise(self, degrees=90):
         """
-        Rotates the entire cube clockwise (along z axis)
+        Rotates the entire cube counterclockwise (along y axis)
+
+        This effectively makes the top face the front face
         """
+        assert degrees % 90 == 0, "Rotation along y-axis must be multiple of 90 degrees!"
+
+        radians = math.radians(degrees)
+
+        rotation_matrix = np.array([[np.cos(radians), 0, np.sin(radians)],
+                                    [0, 1, 0],
+                                    [-np.sin(radians), 0, np.cos(radians)]])
+        
+        self.perform_move(transformation_matrix=rotation_matrix, rotation=True)
+
+
+    def rotate_cube_along_y_clockwise(self, degrees=90):
+        """
+        Rotates the entire cube clockwise (along y axis)
+
+        This effectively makes the bottom face the front face
+        """
+
+        assert degrees % 90 == 0, "Rotation along y-axis must be multiple of 90 degrees!"
+        self.rotate_cube_along_y_counterclockwise(-degrees)
+
+
+    def rotate_cube_along_z_clockwise(self, degrees=90):
+        """
+        Rotates the entire cube upwards (along z)
+
+        This effectively makes the right face the front face
+        """
+        assert degrees % 90 == 0, "Rotation along z-axis must be multiple of 90 degrees!"
+
+    def rotate_cube_along_z_counterclockwise(self, degrees=90):
+        """
+        Rotates the entire cube downwards (along z)
+
+        This effectively makes the left face the front face
+        """
+        assert degrees % 90 == 0, "Rotation along z-axis must be multiple of 90 degrees!"
         pass
 
-    def rotate_cube_along_z_counterclockwise(self):
-        """
-        Rotates the entire cube counterclockwise (along z axis)
-        """
-        pass
-
-    def rotate_cube_along_y_clockwise(self):
-        """
-        Rotates the entire cube upwards (along y)
-        """
-        pass
-
-    def rotate_cube_along_y_counterclockwise(self):
-        """
-        Rotates the entire cube downwards (along y)
-        """
-        pass
-
-    def rotate_cube_along_x_clockwise(self):
+    def rotate_cube_along_x_clockwise(self, degrees=90):
         """
         Rotates the entire cube clockwise (aong x axis).
 
         This effectively turns the cube on its side
         """
+        assert degrees % 90 == 0, "Rotation along x-axis must be multiple of 90 degrees!"
         pass
 
-    def rotate_cube_along_x_clockwise(self):
+    def rotate_cube_along_x_clockwise(self, degrees=90):
         """
         Rotates the entire cube counterclockwise (aong x axis).
 
         This effectively turns the cube on its side
         """
+        assert degrees % 90 == 0, "Rotation along x-axis must be multiple of 90 degrees!"
         pass
 
 
@@ -448,6 +471,9 @@ def main():
     c1.F(90)
     c1.B_prime(90)
     c1.B(90)
+
+    #c1.rotate_cube_along_y_counterclockwise()
+    c1.rotate_cube_along_y_clockwise()
 
     print("AFTER:", end=" ")
     c1.visualize_cube()
