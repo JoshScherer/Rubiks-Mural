@@ -149,6 +149,9 @@ class Cube:
 
         @return: string of same format as input
         """
+
+        # TODO: Manage assumption for white on top and red as normal (1, 0, 0)
+
         positions_to_cubie_index = {v: k for k, v in self.cubie_index_positions.items()}  # 1:1 mapping, so this works
 
         # 1:many mapping, so we must use the following
@@ -198,35 +201,36 @@ class Cube:
         print("".join(output_str))
 
     
-    def perform_move(self, transformation_matrix, x=None, y=None, z=None):
+    def perform_move(self, transformation_matrix, x=None, y=None, z=None, rotation=False):
         """
-        Given a transformation matrix for (U, D, R, L, F, or B - or associated primes), perform the move on the cube
+        Given a transformation matrix for (U, D, R, L, F, or B - or associated primes) or rotation, perform the move on the cube.
 
         @param transformation_matrix: np.array with values for the corresponding rotation done to appropriate cubies
         @param x: if not None (default), then cubies at this x position undergo the transformation
         @param y: if not None (default), then cubies at this y position undergo the transformation
         @param z: if not None (default), then cubies at this z position undergo the transformation
+        @param rotation: False if (U, D, R, L, F, or B - or primes), True if rotation (whole cube)
         """
         assert x is not None or y is not None or z is not None, "Move cannot be performed. Provide axis of rotation."
 
         # pos_ind is the index of the tuple for position (0 for x, 1 for y, 2 for z)
         # pos_val is the value that the position index must be (-1, 0, or 1)
-        if x is not None:
+        if not rotation and (x is not None):
             assert y is None and z is None, "Move cannot be performed. Multiple axes of rotation provided."
             pos_ind = 0 
             pos_val = x
 
-        elif y is not None:
+        elif not rotation and (y is not None):
             assert x is None and z is None, "Move cannot be performed. Multiple axes of rotation provided."
             pos_ind = 1
             pos_val = y
-        else:
+        elif not rotation:
             assert x is None and y is None, "Move cannot be performed. Multiple axes of rotation provided."
             pos_ind = 2
             pos_val = z
 
         for index, cubie in enumerate(self.cube):
-            if cubie.pos[pos_ind] == pos_val:
+            if rotation or cubie.pos[pos_ind] == pos_val:
                 self.cube[index].pos = tuple([round(x) for x in np.dot(transformation_matrix, cubie.pos)])
             
                 for color, normal_vec in self.cube[index].colors.items():
@@ -385,6 +389,49 @@ class Cube:
 
         assert degrees % 90 == 0, "B rotation must be multiple of 90 degrees!"
         self.B_prime(-degrees)
+
+
+    def rotate_cube_along_z_clockwise(self):
+        """
+        Rotates the entire cube clockwise (along z axis)
+        """
+        pass
+
+    def rotate_cube_along_z_counterclockwise(self):
+        """
+        Rotates the entire cube counterclockwise (along z axis)
+        """
+        pass
+
+    def rotate_cube_along_y_clockwise(self):
+        """
+        Rotates the entire cube upwards (along y)
+        """
+        pass
+
+    def rotate_cube_along_y_counterclockwise(self):
+        """
+        Rotates the entire cube downwards (along y)
+        """
+        pass
+
+    def rotate_cube_along_x_clockwise(self):
+        """
+        Rotates the entire cube clockwise (aong x axis).
+
+        This effectively turns the cube on its side
+        """
+        pass
+
+    def rotate_cube_along_x_clockwise(self):
+        """
+        Rotates the entire cube counterclockwise (aong x axis).
+
+        This effectively turns the cube on its side
+        """
+        pass
+
+
 
 def main():
     c1 = Cube()
