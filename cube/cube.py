@@ -393,23 +393,29 @@ class Cube:
 
     def rotate_cube_along_x_counterclockwise(self, degrees=90):
         """
-        Rotates the entire cube counterclockwise (aong x axis).
+        Rotates the entire cube counterclockwise (along x axis).
 
-        This effectively turns the cube on its side
+        This effectively makes the right face the top face
         """
         assert degrees % 90 == 0, "Rotation along x-axis must be multiple of 90 degrees!"
 
-        pass
+        radians = math.radians(degrees)
+
+        rotation_matrix = np.array([[1, 0, 0],
+                                    [0, np.cos(radians), -np.sin(radians)],
+                                    [0, np.sin(radians), np.cos(radians)]])   
+
+        self.perform_move(transformation_matrix=rotation_matrix, rotation=True)   
 
 
     def rotate_cube_along_x_clockwise(self, degrees=90):
         """
-        Rotates the entire cube clockwise (aong x axis).
+        Rotates the entire cube clockwise (along x axis).
 
-        This effectively turns the cube on its side
+        This effectively makes the left face the top face
         """
         assert degrees % 90 == 0, "Rotation along x-axis must be multiple of 90 degrees!"
-        pass
+        self.rotate_cube_along_x_counterclockwise(-degrees)
 
 
     def rotate_cube_along_y_counterclockwise(self, degrees=90):
@@ -489,6 +495,9 @@ def main():
 
     c1.rotate_cube_along_z_counterclockwise()
     c1.rotate_cube_along_z_clockwise()
+
+    c1.rotate_cube_along_x_counterclockwise()
+    c1.rotate_cube_along_x_clockwise()
 
     print("AFTER:", end=" ")
     c1.visualize_cube()
