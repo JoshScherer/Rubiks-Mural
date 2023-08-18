@@ -1,6 +1,19 @@
 import numpy as np
 import math
 
+class Cubie:
+    """
+    Represents an individual square on the cube (27 total on a cube).
+
+    @param square_type: center, corner, or edge
+    @param pos: actual location of the Cubie [(-1, -1, -1), ..., (1, 1, 1)]
+    @param colors: dictionary of {color: normal_vector}
+    """
+    def __init__(self, square_type, pos, colors):
+        self.square_type = square_type
+        self.pos = pos
+        self.colors = colors
+
 class Cube:
     def __init__(self):
         self.cube = [None] * 26  # array of cubies that represent the whole cube
@@ -68,6 +81,15 @@ class Cube:
 
 
     def get_input_colors(self):
+        """
+        Prompt user to provide input for faces (gives instructions).
+
+        Face order for input: W, G, R, B, O, Y
+        Context for cube orientation is also provided.
+        Input should be given from top left to bottom right
+
+        @return: string of combined user inputs to translate into cube representation
+        """
         # Order for each side (listed first) as FRONT, LEFT, RIGHT, TOP
         orient_order = [['WHITE', 'GREEN', 'BLUE', 'ORANGE'],
                         ['GREEN', 'ORANGE', 'RED', 'WHITE'],
@@ -88,6 +110,9 @@ class Cube:
 
 
     def populate_colors(self, color_string):   
+        """
+        Function to initialize the cube's colors based on user input (or default)
+        """
         # Loop through colors input
         for index, color_char in enumerate(color_string):
             cubie_index = self.string_index_to_cubie_index_map[index]   # determine index of cubie
@@ -118,7 +143,12 @@ class Cube:
         self.populate_colors(color_string=color_string)
 
 
-    def visualize_cube(self):  
+    def visualize_cube(self):
+        """
+        Takes a cube object and translates it into a human-readable representation that matches format for input
+
+        @return: string of same format as input
+        """
         positions_to_cubie_index = {v: k for k, v in self.cubie_index_positions.items()}  # 1:1 mapping, so this works
 
         # 1:many mapping, so we must use the following
@@ -301,7 +331,7 @@ class Cube:
         Rotates the left face <degrees> clockwise (when facing left face)
 
         @param degrees: degrees that left will be rotated clockwise
-        """
+        """ 
 
         assert degrees % 90 == 0, "L rotation must be multiple of 90 degrees!"
         self.L_prime(-degrees)
@@ -356,37 +386,26 @@ class Cube:
         assert degrees % 90 == 0, "B rotation must be multiple of 90 degrees!"
         self.B_prime(-degrees)
 
+def main():
+    c1 = Cube()
+
+    c1.initialize_cube()
+    print("BEFORE:", end=" ")
+    c1.visualize_cube()
+
+    c1.L_prime(90)
+    c1.L(90)
+    c1.R(90)
+    c1.R_prime(90)
+    c1.F_prime(90)
+    c1.F(90)
+    c1.B_prime(90)
+    c1.B(90)
+
+    print("AFTER:", end=" ")
+    c1.visualize_cube()
 
 
-
-class Cubie:
-    """
-    Represents an individual square on the cube (27 total on a cube).
-
-    @param square_type: center, corner, or edge
-    @param pos: actual location of the Cubie [(-1, -1, -1), ..., (1, 1, 1)]
-    @param colors: dictionary of {color: normal_vector}
-    """
-    def __init__(self, square_type, pos, colors):
-        self.square_type = square_type
-        self.pos = pos
-        self.colors = colors
-
-c1 = Cube()
-
-c1.initialize_cube()
-print("BEFORE:", end=" ")
-c1.visualize_cube()
-
-c1.L_prime(90)
-c1.L(90)
-c1.R(90)
-c1.R_prime(90)
-c1.F_prime(90)
-c1.F(90)
-c1.B_prime(90)
-c1.B(90)
-
-print("AFTER:", end=" ")
-c1.visualize_cube()
+if __name__ == '__main__':
+    main()
 
