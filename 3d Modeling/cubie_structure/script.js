@@ -55,18 +55,82 @@ function createColoredCube(color_top, color_bot, color_left, color_right, color_
 }
 
 // Create our cube made up of 27 cubies (center is never actually seen)
-for (var i = -1; i < 2; i++) {
-    for (var j = -1; j < 2; j++) {
-        for (var k = -1; k < 2; k++) {
-            var cube = createColoredCube('white', 'yellow', 'green', 'blue', 'red', 'orange', new THREE.Vector3(i, j, k));
-            scene.add(cube);
-        }
+const cubes = [];
+for (let i = -1; i <= 1; i++) {
+  for (let j = -1; j <= 1; j++) {
+    for (let k = -1; k <= 1; k++) {
+      var cube = createColoredCube('white', 'yellow', 'green', 'blue', 'red', 'orange', new THREE.Vector3(i, j, k));
+      cube.position.set(i, j, k);
+      scene.add(cube);
+      cubes.push(cube);
     }
+  }
 }
 
-function animationLoop() {
-    controls.update();
-    renderer.render(scene, camera);
-}
+let positionUpdated = false;
 
-renderer.setAnimationLoop(animationLoop);
+const bottomLayer = new THREE.Group();
+cubes.forEach(cube => {
+  if (cube.position.y === -1) {
+    bottomLayer.add(cube);
+  }
+});
+scene.add(bottomLayer);
+
+// Rotate the Group
+let angle = 0;
+const rotationSpeed = 0.05; // radians per frame
+const targetAngle = Math.PI / 2; // 90 degrees
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  if (angle < targetAngle) {
+    angle += rotationSpeed;
+    if (angle > targetAngle) {
+      angle = targetAngle;  // Set angle to targetAngle if it exceeds
+    }
+    bottomLayer.rotation.y = angle;  // Apply the rotation directly
+  } else if (!positionUpdated) {
+    updatePositions();
+    positionUpdated = true;  // Ensure this is called only once
+  }
+
+  renderer.render(scene, camera);
+}
+animate();
+
+// Update the Positions (after the rotation is complete)
+function updatePositions() {
+    bottomLayer.updateMatrixWorld(true);
+  
+    const cubes = bottomLayer.children.slice();
+    const groupQuaternion = new THREE.Quaternion().setFromRotationMatrix(bottomLayer.matrixWorld);
+  
+    cubes.forEach(cube => {
+      // Apply the group's world matrix to the cube's position
+      cube.position.applyMatrix4(bottomLayer.matrixWorld);
+      cube.position.y = -1;  // Ensure y position is exactly -1
+  
+      // Apply the group's rotation to the cube
+      const cubeQuaternion = new THREE.Quaternion().setFromEuler(cube.rotation);
+      cubeQuaternion.premultiply(groupQuaternion);
+      cube.rotation.setFromQuaternion(cubeQuaternion);
+  
+      // Add the cube back to the scene
+      scene.add(cube);
+    });
+  
+    // Clear the group
+    bottomLayer.clear();
+    // Reset the group's rotation
+    bottomLayer.rotation.set(0, 0, 0);
+  }
+  
+
+
+
+
+
+
+
